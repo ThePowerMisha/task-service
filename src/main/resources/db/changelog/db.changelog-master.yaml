@@ -3,5 +3,5 @@ databaseChangeLog:
       file: changeset/table-users.yaml
       relativeToChangelogFile: true
   - include:
-      file: changeset/table-document.yaml
+      file: changeset/table-task.yaml
       relativeToChangelogFile: true

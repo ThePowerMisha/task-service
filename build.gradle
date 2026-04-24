@@ -45,8 +45,9 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
-	//Postgres
+	//DB
 	runtimeOnly 'org.postgresql:postgresql'
+	implementation 'org.liquibase:liquibase-core:5.0.1'
 
 	//mapper
 	implementation 'org.mapstruct:mapstruct:1.6.3'

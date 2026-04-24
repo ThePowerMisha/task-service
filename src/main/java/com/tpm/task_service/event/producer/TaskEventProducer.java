@@ -3,7 +3,6 @@ package com.tpm.task_service.event.producer;
 import com.tpm.task_service.config.KafkaTopicsProperties;
 import com.tpm.task_service.entity.Task;
 import com.tpm.task_service.entity.User;
-import com.tpm.task_service.event.TopicNames;
 import com.tpm.task_service.event.dto.TaskAssignedEvent;
 import com.tpm.task_service.event.dto.TaskCreatedEvent;
 import lombok.RequiredArgsConstructor;
