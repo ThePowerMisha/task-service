@@ -1,6 +1,7 @@
 package com.tpm.task_service.controller;
 
 import com.tpm.task_service.dto.CreateUserRequest;
+import com.tpm.task_service.dto.ResponseDto;
 import com.tpm.task_service.dto.UserDto;
 import com.tpm.task_service.service.UserService;
 import jakarta.validation.Valid;
@@ -22,17 +23,17 @@ public class UserController {
     private final UserService  userService;
 
     @GetMapping
-    public List<UserDto> getUsers(@PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC)Pageable pageable){
-        return userService.getUsers(pageable);
+    public ResponseDto<List<UserDto>> getUsers(@PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC)Pageable pageable){
+        return ResponseDto.success(userService.getUsers(pageable));
     }
 
     @GetMapping("/{id}/")
-    public UserDto getUserById(@PathVariable UUID id){
-        return userService.getUser(id);
+    public ResponseDto<UserDto> getUserById(@PathVariable UUID id){
+        return ResponseDto.success(userService.getUser(id));
     }
 
     @PutMapping
-    public UserDto createUser(@Valid @RequestBody CreateUserRequest request){
-        return userService.createUser(request);
+    public ResponseDto<UserDto> createUser(@Valid @RequestBody CreateUserRequest request){
+        return ResponseDto.success(userService.createUser(request));
     }
 }
