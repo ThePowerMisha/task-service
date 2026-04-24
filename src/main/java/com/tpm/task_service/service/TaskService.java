@@ -19,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class TaskService {
@@ -28,9 +30,10 @@ public class TaskService {
     private final TaskMapper taskMapper;
     private final TaskEventProducer taskEventProducer;
 
-    public Page<TaskDto> getTasks(Pageable pageable) {
+    public List<TaskDto> getTasks(Pageable pageable) {
         return taskRepository.findAll(pageable)
-                .map(taskMapper::toDto);
+                .map(taskMapper::toDto)
+                .toList();
     }
 
     public TaskDto getTaskById(Long id) {

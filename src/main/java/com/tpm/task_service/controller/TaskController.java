@@ -23,7 +23,7 @@ public class TaskController {
     private final TaskService taskService;
 
     @GetMapping("/all")
-    public Page<TaskDto> getAllTasks(@PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public List<TaskDto> getAllTasks(@PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return taskService.getTasks(pageable);
     }
 

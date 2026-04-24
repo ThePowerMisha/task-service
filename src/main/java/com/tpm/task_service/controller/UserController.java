@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -21,13 +22,13 @@ public class UserController {
     private final UserService  userService;
 
     @GetMapping
-    public Page<UserDto> getUsers(@PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC)Pageable pageable){
+    public List<UserDto> getUsers(@PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC)Pageable pageable){
         return userService.getUsers(pageable);
     }
 
-    @GetMapping("/{id}")
-    public UserDto getUserById(@PathVariable UUID uuid){
-        return userService.getUser(uuid);
+    @GetMapping("/{id}/")
+    public UserDto getUserById(@PathVariable UUID id){
+        return userService.getUser(id);
     }
 
     @PutMapping

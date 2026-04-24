@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -25,12 +26,13 @@ public class UserService {
     public UserDto getUser(UUID uuid){
         return userMapper.toDto(
                 userRepository.findById(uuid)
-                        .orElseThrow(()->new UserNotFoundException("Can't find author with id: " + uuid)));
+                        .orElseThrow(()->new UserNotFoundException("Can't find user with id: " + uuid)));
     }
 
-    public Page<UserDto> getUsers(Pageable pageable){
+    public List<UserDto> getUsers(Pageable pageable){
         return userRepository.findAll(pageable)
-                .map(userMapper::toDto);
+                .map(userMapper::toDto)
+                .toList();
     }
 
     @Transactional
