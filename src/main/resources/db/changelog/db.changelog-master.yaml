@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: changeset/table-users.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: changeset/table-document.yaml
+      relativeToChangelogFile: true

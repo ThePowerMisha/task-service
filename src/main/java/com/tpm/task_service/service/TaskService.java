@@ -34,9 +34,9 @@ public class TaskService {
     }
 
     public TaskDto getTaskById(Long id) {
-        Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new TaskNotFoundException("Task not found: " + id));
-        return taskMapper.toDto(task);
+        return taskMapper.toDto(
+                taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException("Task not found: " + id)));
     }
 
 

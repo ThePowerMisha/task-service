@@ -1,26 +1,29 @@
 package com.tpm.task_service.config;
 
-import com.tpm.task_service.event.TopicNames;
+import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.TopicBuilder;
 
 @Configuration
+@RequiredArgsConstructor
 public class KafkaConfig {
+
+    private final KafkaTopicsProperties kafkaTopicsProperties;
 
     @Bean
     public NewTopic taskCreatedTopic() {
-        return TopicBuilder.name(TopicNames.TASK_CREATED)
-                .partitions(3)
+        return TopicBuilder.name(kafkaTopicsProperties.getTaskCreated())
+                .partitions(1)
                 .replicas(1)
                 .build();
     }
 
     @Bean
     public NewTopic taskAssignedTopic() {
-        return TopicBuilder.name(TopicNames.TASK_ASSIGNED)
-                .partitions(3)
+        return TopicBuilder.name(kafkaTopicsProperties.getTaskAssigned())
+                .partitions(1)
                 .replicas(1)
                 .build();
     }

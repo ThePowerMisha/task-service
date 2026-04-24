@@ -1,5 +1,6 @@
 package com.tpm.task_service.event.producer;
 
+import com.tpm.task_service.config.KafkaTopicsProperties;
 import com.tpm.task_service.entity.Task;
 import com.tpm.task_service.entity.User;
 import com.tpm.task_service.event.TopicNames;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TaskEventProducer {
     private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final KafkaTopicsProperties kafkaTopicsProperties;
 
     public void sendTaskCreated(Task task){
 
@@ -33,7 +35,7 @@ public class TaskEventProducer {
                 userId,
                 Instant.now()
         );
-        kafkaTemplate.send(TopicNames.TASK_CREATED, String.valueOf(task.getId()), event);
+        kafkaTemplate.send(kafkaTopicsProperties.getTaskCreated(), String.valueOf(task.getId()), event);
     }
 
     public void sendTaskAssigned(Task task) {
@@ -45,6 +47,6 @@ public class TaskEventProducer {
                 Instant.now()
         );
 
-        kafkaTemplate.send(TopicNames.TASK_ASSIGNED, String.valueOf(task.getId()), event);
+        kafkaTemplate.send(kafkaTopicsProperties.getTaskAssigned(), String.valueOf(task.getId()), event);
     }
 }

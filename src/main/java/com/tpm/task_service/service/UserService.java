@@ -1,10 +1,15 @@
 package com.tpm.task_service.service;
 
+import com.tpm.task_service.dto.CreateUserRequest;
 import com.tpm.task_service.dto.UserDto;
+import com.tpm.task_service.entity.User;
+import com.tpm.task_service.exception.EmailAlreadyExistException;
 import com.tpm.task_service.exception.UserNotFoundException;
 import com.tpm.task_service.mapper.UserMapper;
 import com.tpm.task_service.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,11 +28,24 @@ public class UserService {
                         .orElseThrow(()->new UserNotFoundException("Can't find author with id: " + uuid)));
     }
 
+    public Page<UserDto> getUsers(Pageable pageable){
+        return userRepository.findAll(pageable)
+                .map(userMapper::toDto);
+    }
+
     @Transactional
-    public UserDto createUser(UserDto userDto){
+    public UserDto createUser(CreateUserRequest request){
+
+        if(userRepository.existsByEmail(request.email().toLowerCase())){
+            throw new EmailAlreadyExistException("This email has already taken");
+        }
+
+        User user = new User()
+                .setName(request.name())
+                .setEmail(request.email().toLowerCase());
+
         return userMapper.toDto(
-                userRepository.save(
-                        userMapper.toEntity(userDto))
+                userRepository.save(user)
         );
     }
 
