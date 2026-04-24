@@ -24,9 +24,9 @@ public class UserService {
     private final UserMapper userMapper;
 
     public UserDto getUser(UUID uuid){
-        return userMapper.toDto(
-                userRepository.findById(uuid)
-                        .orElseThrow(()->new UserNotFoundException("Can't find user with id: " + uuid)));
+        return userRepository.findById(uuid)
+                .map(userMapper::toDto)
+                .orElseThrow(()->new UserNotFoundException("Can't find user with id: " + uuid));
     }
 
     public List<UserDto> getUsers(Pageable pageable){

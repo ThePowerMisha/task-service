@@ -12,7 +12,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
 @Accessors(chain = true)
 public class User {
     @Id

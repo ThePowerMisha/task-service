@@ -11,7 +11,6 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
 @Accessors(chain = true)
 public class Task {
     @Id
