@@ -1,12 +1,14 @@
 package com.tpm.task_service.service;
 
+import com.tpm.task_service.config.KafkaTopicsProperties;
 import com.tpm.task_service.dto.AssignTaskRequest;
 import com.tpm.task_service.dto.ChangeTaskStatusRequest;
 import com.tpm.task_service.dto.CreateTaskRequest;
 import com.tpm.task_service.dto.TaskDto;
 import com.tpm.task_service.entity.Task;
 import com.tpm.task_service.entity.User;
-import com.tpm.task_service.event.producer.TaskEventProducer;
+import com.tpm.task_service.event.dto.TaskAssignedEvent;
+import com.tpm.task_service.event.dto.TaskCreatedEvent;
 import com.tpm.task_service.exception.TaskNotFoundException;
 import com.tpm.task_service.exception.UserNotFoundException;
 import com.tpm.task_service.mapper.TaskMapper;
@@ -14,11 +16,11 @@ import com.tpm.task_service.repository.TaskRepository;
 import com.tpm.task_service.repository.UserRepository;
 import com.tpm.task_service.type.TaskStatus;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -28,7 +30,8 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
     private final TaskMapper taskMapper;
-    private final TaskEventProducer taskEventProducer;
+    private final OutboxService outboxService;
+    private final KafkaTopicsProperties kafkaTopicsProperties;
 
     public List<TaskDto> getTasks(Pageable pageable) {
         return taskRepository.findAll(pageable)
@@ -58,7 +61,22 @@ public class TaskService {
 
         Task saved = taskRepository.save(task);
 
-        taskEventProducer.sendTaskCreated(saved);
+        TaskCreatedEvent event = new TaskCreatedEvent(
+                saved.getId(),
+                saved.getTitle(),
+                saved.getDescription(),
+                saved.getStatus().name(),
+                saved.getUser() != null ? saved.getUser().getId() : null,
+                Instant.now()
+        );
+
+        outboxService.saveEvent(
+                "TASK",
+                String.valueOf(saved.getId()),
+                "TASK_CREATED",
+                kafkaTopicsProperties.getTaskCreated(),
+                event
+        );
 
         return taskMapper.toDto(saved);
     }
@@ -75,7 +93,19 @@ public class TaskService {
         task.setUser(user);
         Task saved = taskRepository.save(task);
 
-        taskEventProducer.sendTaskAssigned(saved);
+        TaskAssignedEvent event = new TaskAssignedEvent(
+                saved.getId(),
+                user.getId(),
+                Instant.now()
+        );
+
+        outboxService.saveEvent(
+                "TASK",
+                String.valueOf(saved.getId()),
+                "TASK_ASSIGNED",
+                kafkaTopicsProperties.getTaskAssigned(),
+                event
+        );
 
         return taskMapper.toDto(saved);
     }

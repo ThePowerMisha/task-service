@@ -29,11 +29,17 @@ spring:
       properties:
         spring.json.add.type.headers: false
 
+
 app:
   kafka:
     topics:
       task-created: task.created
       task-assigned: task.assigned
+  outbox:
+    batch-size: 100
+    fixed-delay-ms: 5000
+    max-attempts: 10
+    retry-delay-ms: 30000
 
 management:
   endpoints:
